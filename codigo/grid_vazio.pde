@@ -2,7 +2,7 @@ int[][] grid;
 int n = 12;
 int f = 22;
 void setup(){
-  size(900,600);
+  size(900,700);
   frameRate(60);
   grid = criaGrid();
  
