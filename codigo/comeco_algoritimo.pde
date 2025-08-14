@@ -1,11 +1,14 @@
 int[][] grid;
+int[][] adj;
 int n = 12;
 int f = 22;
-void setup(){
-  size(900,700);
+Grafo grafo;
+void setup() {
+  size(900, 700);
   frameRate(60);
   grid = criaGrid();
- 
+  adj = criaAdjacencia();
+  grafo = new Grafo(adj);
 }
 
 int[][] criaGrid(){
@@ -37,9 +40,66 @@ void mostraGrid(){
 
 
 
-void draw(){
+void draw() {
   mostraGrid();
- 
-  
-  if(mousePressed) grid = criaGrid();
+
+  int origem = index(0, 0);
+  int destino = index(n - 1, f - 1);
+
+  ArrayList<Integer> caminho = grafo.dijkstra(origem, destino);
+  grafo.desenhar(caminho);
+}
+
+
+int index(int i, int j) {
+  return i * f + j;
+}
+
+int linha(int index) {
+  return index / f;
+}
+
+int coluna(int index) {
+  return index % f;
+}
+
+int[][] criaAdjacencia() {
+  int total = n * f;
+  int[][] adj = new int[total][total];
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < f; j++) {
+      int atual = index(i, j);
+
+      // Cima
+      if (i > 0) {
+        int vizinho = index(i - 1, j);
+        adj[atual][vizinho] = 1;
+        adj[vizinho][atual] = 1;
+      }
+
+      // Baixo
+      if (i < n - 1) {
+        int vizinho = index(i + 1, j);
+        adj[atual][vizinho] = 1;
+        adj[vizinho][atual] = 1;
+      }
+
+      // Esquerda
+      if (j > 0) {
+        int vizinho = index(i, j - 1);
+        adj[atual][vizinho] = 1;
+        adj[vizinho][atual] = 1;
+      }
+
+      // Direita
+      if (j < f - 1) {
+        int vizinho = index(i, j + 1);
+        adj[atual][vizinho] = 1;
+        adj[vizinho][atual] = 1;
+      }
+    }
+  }
+
+  return adj;
 }
