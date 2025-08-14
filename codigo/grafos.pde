@@ -1,15 +1,17 @@
 // Definição da classe Grafo
 class Grafo {
   
-  int numVertices;
   int[][] matrizAdj;
   PVector[] posicoes; // Posições das partículas (nós do grafo)
   PVector[] velocidades; // Velocidades das partículas
-  //float raio = 10; // Raio dos nós
+  float raio = 10; //
   float k = 0.001; // Constante da mola para a atração
   float c = 3000; // Constante de repulsão
   int n = 12;
   int f = 22;
+  int numVertices = n*f;
+  
+  
   
   // Construtor da classe Grafo
   Grafo(int numVertices) {
@@ -34,73 +36,26 @@ class Grafo {
     matrizAdj[j][i] = 1; // Para grafos não direcionados
   }
   
-  // Adiciona uma aresta entre dois vértices
-  void adicionarAresta(int i, int j, int peso) {
-    matrizAdj[i][j] = peso;
-    matrizAdj[j][i] = peso; // Para grafos não direcionados
-  }
+
 
   // Inicializa as posições das partículas em um círculo
-  void inicializarPosicoes() {
+ void inicializarPosicoes() {
+  float l = width / (float)f;
+  float h = height / (float)n;
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < f; j++) {
+      int idx = index(i, j);
+      posicoes[idx] = new PVector(j * l + l / 2, i * h + h / 2);
+      velocidades[idx] = new PVector(0, 0);
+    }
+  }
+}
+
+
   
-   int cont = 0;
-     for(int i = 0; i < n; i++){
-      for(int j = 0; j < f; j++){
-        cont = cont + 1;
-        float x = i;
-        float y = j;
-         posicoes[cont] = new PVector(x, y);
-         velocidades[cont] = new PVector(0, 0);
-    }
-  }
-    // Posição fixa do vértice 0
-    posicoes[0] = new PVector(width / 2, height / 2);
-    velocidades[0] = new PVector(0, 0);
-  }
 
-  // Atualiza as posições das partículas
-  void atualizar() {
-    for (int i = 1; i < numVertices; i++) {
-      PVector forca = new PVector(0, 0);
-      
-      // Força de repulsão
-      for (int j = 0; j < numVertices; j++) {
-        if (i != j) {
-          PVector direcao = PVector.sub(posicoes[i], posicoes[j]);
-          float distancia = direcao.mag();
-          if (distancia > 0) {
-            direcao.normalize();
-            float forcaRepulsao = c / (distancia * distancia);
-            direcao.mult(forcaRepulsao);
-            forca.add(direcao);
-          }
-        }
-      }
-
-      // Força de atração
-      for (int j = 0; j < numVertices; j++) {
-        if (matrizAdj[i][j] > 0) {
-          PVector direcao = PVector.sub(posicoes[j], posicoes[i]);
-          float distancia = direcao.mag();
-          direcao.normalize();
-          float forcaAtracao = k * (distancia - raio);
-          direcao.mult(forcaAtracao);
-          forca.add(direcao);
-        }
-      }
-
-      velocidades[i].add(forca);
-      posicoes[i].add(velocidades[i]);
-
-      // Reduz a velocidade para estabilizar a simulação
-      velocidades[i].mult(0.5);
-
-      // Mantém as partículas dentro da tela
-      if (posicoes[i].x < 0 || posicoes[i].x > width) velocidades[i].x *= -1; 
-      if (posicoes[i].y < 0 || posicoes[i].y > height)velocidades[i].y *= -1;
-     
-    }
-  }
+   
 
   // Desenha o grafo
   void desenhar(ArrayList<Integer> caminho) {
@@ -120,7 +75,7 @@ class Grafo {
             }
           }
         }
-        stroke(destaque ? color(255, 0, 0) : 0);
+        stroke(destaque ? color(#E21EE3) : 0);
         strokeWeight(matrizAdj[i][j]);
         line(posicoes[i].x, posicoes[i].y, posicoes[j].x, posicoes[j].y);
       }
@@ -128,7 +83,7 @@ class Grafo {
   }
 
   // Desenha os nós
-  fill(255);
+  fill(#1EB0E3);
   stroke(0);
   strokeWeight(1);
   for (int i = 0; i < numVertices; i++) {
