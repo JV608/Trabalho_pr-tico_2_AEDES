@@ -10,8 +10,8 @@ void setup() {
 }
 
 void draw() {
-  int tileWidth = grama1.width;
-  int tileHeight = grama1.height;
+  int gramaWidth = grama1.width;
+  int gramaHeight = grama1.height;
 
   for (int x = 0; x < width; x += gramaWidth) {
     for (int y = 0; y < height; y += gramaHeight) {
@@ -24,4 +24,5 @@ void draw() {
     }
   }
 }
+
 
