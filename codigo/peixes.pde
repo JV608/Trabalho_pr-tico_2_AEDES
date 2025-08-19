@@ -1,4 +1,4 @@
-class peixe{
+class zombie{
  float x , y ;
  float vx, vy;
  float d;
@@ -8,7 +8,7 @@ class peixe{
  
  
  
-public peixe(ArrayList<Integer> caminhoIndices, Grafo grafo) {
+public zombie(ArrayList<Integer> caminhoIndices, Grafo grafo) {
   this.x = grafo.posicoes[caminhoIndices.get(0)].x;
   this.y = grafo.posicoes[caminhoIndices.get(0)].y;
   this.vx = 0;
@@ -35,8 +35,8 @@ public void move() {
 float dy = destino.y - y;
 
 float fatorSuavizacao = 0.1; // 0 < fator < 1
-vx = lerp(vx, 0.1 * dx, fatorSuavizacao);
-vy = lerp(vy, 0.1 * dy, fatorSuavizacao);
+vx = lerp(vx, 0.05 * dx, fatorSuavizacao);
+vy = lerp(vy, 0.05 * dy, fatorSuavizacao);
 
 
 
@@ -50,6 +50,7 @@ vy = lerp(vy, 0.1 * dy, fatorSuavizacao);
     idxDestino++;
   }
 }
+
 
 public void desenha(){
   
