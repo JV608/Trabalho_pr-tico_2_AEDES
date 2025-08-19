@@ -14,13 +14,14 @@ int selecionadoA = -1;
 
 
 Grafo grafo;
-peixe a;
+zombie a;
 
 void setup() {
-  grama1 = loadImage("C:\\Users\\João\\Desktop\\colteshit\\definitivo_tower\\grama1.png");
-  grama2 = loadImage("C:\\Users\\João\\Desktop\\colteshit\\definitivo_tower\\grama2.png");
-  pedra = loadImage("C:\\Users\\João\\Desktop\\colteshit\\definitivo_tower\\pedra.png");
-  zumbi = loadImage("C:\\Users\\João\\Desktop\\colteshit\\definitivo_tower\\1_Zombie.png");
+  grama1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama1.png");
+  grama2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama2.png");
+  pedra  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/pedra.png");
+  zumbi  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/1_Zombie.png");
+
   size(900, 700);
   frameRate(60);
   grid = criaGrid();
@@ -31,7 +32,7 @@ void setup() {
   ArrayList<Integer> caminhoInicial = grafo.dijkstra(origem, destino);
 
   // cria peixe com o caminho inicial
-  a = new peixe(caminhoInicial, grafo);
+  a = new zombie(caminhoInicial, grafo);
  
   
 }
@@ -156,11 +157,13 @@ if (mouseX >= pos.x - l/2 && mouseX <= pos.x + l/2 &&
       grafo.ocupado[i] = true;
       for (int j = 0; j < grafo.numVertices; j++) {
         if (grafo.matrizAdj[i][j] > 0) {
-          grafo.matrizAdj[i][j] += 256; 
-          grafo.matrizAdj[j][i] += 256; 
+          grafo.matrizAdj[i][j] = 0;
+          grafo.matrizAdj[j][i] = 0;
          
         }
       }
+      
+
       break;
     }
   }
