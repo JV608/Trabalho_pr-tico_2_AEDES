@@ -5,10 +5,21 @@ class zombie{
  int cor;
  ArrayList<PVector> caminho; 
  int idxDestino;
- 
+
+
+
+  int hp;
+  boolean estaVivo;
+  int recompensa;
  
  
 public zombie(ArrayList<Integer> caminhoIndices, Grafo grafo) {
+
+  this.hp = 3; 
+  this.estaVivo = true;
+  this.recompensa = 20;
+
+
   this.x = grafo.posicoes[caminhoIndices.get(0)].x;
   this.y = grafo.posicoes[caminhoIndices.get(0)].y;
   this.vx = 0;
@@ -65,4 +76,12 @@ void atualizarCaminho(ArrayList<Integer> novoCaminhoIndices, Grafo grafo) {
         // aqui você pode tentar manter idxDestino proporcional
         caminho = novoCaminho;
     }
+
+
+void receberDano(int dano) {
+    this.hp -= dano;
+    if (this.hp <= 0) {
+      this.estaVivo = false;
+    }
+  }
 }
