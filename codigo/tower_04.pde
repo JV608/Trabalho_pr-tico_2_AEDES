@@ -2,7 +2,7 @@ int[][] grid;
 int[][] adj;
 int n = 12;
 int f = 22;
-
+int dinheiro;
 
 
 PImage grama1;
@@ -24,6 +24,9 @@ void setup() {
 
   size(900, 700);
   frameRate(60);
+
+  dinheiro = 100;
+
   grid = criaGrid();
   adj = criaAdjacencia();
   grafo = new Grafo(adj);
@@ -60,6 +63,18 @@ void mostraGrid(){
     }
   }
   
+}
+
+
+
+
+
+
+void mostraDinheiro() {
+  textSize(24);
+  fill(255, 215, 0); // Cor de ouro
+  textAlign(RIGHT, TOP);
+  text("Moedas: " + dinheiro, width - 20, 20);       
 }
 
 
@@ -168,3 +183,4 @@ if (mouseX >= pos.x - l/2 && mouseX <= pos.x + l/2 &&
     }
   }
 }
+
