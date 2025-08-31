@@ -14,7 +14,7 @@ int hordaAtual = 0;
 int zumbisPorHorda = 0;
 int zumbisSpawdadosDaHorda = 0;
 boolean hordaEmAndamento = false;
-int tempoEntreHordas = 5000; // 5 segundos de espera entre as hordas
+int tempoEntreHordas = 3000; // 5 segundos de espera entre as hordas
 int tempoProximaHorda = 0;
 int tempoEntreSpawns = 500; // 0.5 segundos entre cada zumbi da mesma horda
 int tempoUltimoSpawn = 0;
@@ -325,3 +325,4 @@ void keyPressed() {
 
 // =========================================
 // =========================================
+
