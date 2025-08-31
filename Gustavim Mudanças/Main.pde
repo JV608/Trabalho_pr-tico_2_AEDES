@@ -20,13 +20,8 @@ int tempoUltimoSpawn = 0;
 
 
 // Variáveis de Imagem
-PImage grama1;
-PImage grama2;
-PImage pedra;
-PImage zumbi;
-PImage torre;
-PImage balaImg;
-PImage casa;
+PImage grama1, grama2, pedra, torre1, torre2, balaImg, casa;
+PImage zumbi1, zumbi2, zumbi3;
 
 Grafo grafo;
 ArrayList<Inimigo> inimigos = new ArrayList<Inimigo>();
@@ -45,8 +40,11 @@ void setup() {
   grama1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama1.png");
   grama2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama2.png");
   pedra  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/pedra.png");
-  zumbi  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/1_Zombie.png");
-  torre = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Torre.png"); 
+  zumbi1  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/1_Zombie.png");
+  zumbi2  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/2_Zombie.png");
+  zumbi3  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/3_Zombie.png");
+  torre1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Torre1.png"); 
+  torre2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Torre2.png"); 
   balaImg = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/bala.png");
   casa = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Casa.png");
 
@@ -441,3 +439,4 @@ void keyPressed() {
 // =========================================
 
 // =========================================
+
