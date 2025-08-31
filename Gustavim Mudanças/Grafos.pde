@@ -124,9 +124,7 @@ class Grafo {
     }
 
     // Desenha a casa do Villager
-
-    // Usa as posições corrigidas
-    image(casa, posicoes[destinoIdx].x - 70, posicoes[destinoIdx].y - 80, 100, 100);
+    image(casa, posicoes[destinoIdx].x - 70, posicoes[destinoIdx].y - 50, 150, 150);
   }
 
   // =========================================
