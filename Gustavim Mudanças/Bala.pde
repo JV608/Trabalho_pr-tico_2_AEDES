@@ -30,6 +30,6 @@ public class Bala {
 
   public boolean Colidir(Inimigo inimigo) {
     float distancia = dist(x, y, inimigo.x, inimigo.y);
-    return distancia < 15; 
+    return distancia < 35; 
   }
 }
