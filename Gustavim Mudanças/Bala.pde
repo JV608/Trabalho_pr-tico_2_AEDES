@@ -25,7 +25,7 @@ public class Bala {
   }
 
   public void show() {
-    image(imagemDaBala, x - 8, y - 8, 16, 16); 
+    image(imagemDaBala, x - 8, y - 8, 24, 24); 
   }
 
   public boolean Colidir(Inimigo inimigo) {
