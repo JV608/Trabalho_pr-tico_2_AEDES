@@ -1,7 +1,7 @@
 class Torre {
   float x, y;
   float alcance;
-  float cadencia; 
+  float cadencia;
   float custo;
   float tempoDesdeUltimoBala;
   int nivel;
@@ -15,15 +15,13 @@ class Torre {
     this.alcance = alcance;
     this.cadencia = cadencia;
     this.custo = custo;
-    this.tempoDesdeUltimoBala = 0; 
+    this.tempoDesdeUltimoBala = 0;
     this.nivel = 1;
     this.balas = new ArrayList<Bala>();
   }
-  
-  
-void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
-    tempoDesdeUltimoBala += deltaTime;
 
+  void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
+    tempoDesdeUltimoBala += deltaTime;
     if (tempoDesdeUltimoBala >= this.cadencia) {
       Inimigo alvo = encontrarAlvo(listaDeInimigos);
       if (alvo != null) {
@@ -31,12 +29,12 @@ void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
         this.tempoDesdeUltimoBala = 0;
       }
     }
-    
+
     for (int i = balas.size() - 1; i >= 0; i--) {
       Bala b = balas.get(i);
       b.mover();
       b.show();
-      
+
       for (Inimigo inimigo : listaDeInimigos) {
         if (b.Colidir(inimigo)) {
           inimigo.receberDano(b.dano);
@@ -44,15 +42,15 @@ void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
           break;
         }
       }
-      
+
       if (!b.ativa) {
         balas.remove(i);
       }
     }
   }
 
-// =========================================
-// =========================================
+  // =========================================
+  // =========================================
 
   Inimigo encontrarAlvo(ArrayList<Inimigo> listaDeInimigos) {
     Inimigo alvoMaisProximo = null;
@@ -66,44 +64,43 @@ void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
     }
     return alvoMaisProximo;
   }
-  
-// =========================================
-// =========================================
+
+  // =========================================
+  // =========================================
   void atirar(Inimigo inimigo) {
     float velBala = 5.0;
     float dx = inimigo.x - this.x;
     float dy = inimigo.y - this.y;
-    float dist = sqrt(dx*dx + dy*dy);
+    float dist = sqrt(dx * dx + dy * dy);
     float velX = (dx / dist) * velBala;
     float velY = (dy / dist) * velBala;
-    
-    balas.add(new Bala(this.x, this.y, velX, velY, this.dano, balaImg)); 
+    balas.add(new Bala(this.x, this.y, velX, velY, this.dano, balaImg));
   }
 
-// =========================================
-// =========================================
+  // =========================================
+  // =========================================
 
-  // Aumenta o nível e os atributos da torre
+
   public void upgrade() {
-     if (nivel < 5) {
-        this.nivel++;
-        this.dano += 2;
-        this.alcance += 10;
-        this.custo += 25;
-        if(this.cadencia > 0.2) {
-          this.cadencia -= 0.1;
-        }
-        println("Torre aprimorada para o nivel: " + this.nivel);
-      } else {
-        println("Torre esta em nivel maximo.");
+    if (nivel < 5) {
+      this.nivel++;
+      this.dano += 1; 
+      this.alcance += 10; 
+      this.custo += 25;
+      if (this.cadencia > 0.15) {
+        this.cadencia -= 0.15; 
       }
+      println("Torre aprimorada para o nivel: " + this.nivel);
+    } else {
+      println("Torre esta em nivel maximo.");
+    }
   }
-  
-// =========================================
-// =========================================
+
+  // =========================================
+  // =========================================
 
   // Desenha a imagem da torre
-  void show(PImage foto){
+  void show(PImage foto) {
     image(foto, this.x - 20, this.y - 45, 40, 60);
   }
 }
