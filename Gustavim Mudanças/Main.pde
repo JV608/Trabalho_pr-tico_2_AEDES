@@ -3,6 +3,7 @@ int[][] grid;
 int[][] adj;
 int n = 12;
 int f = 22;
+int destinoFinal;
 
 //Dinheiro
 int dinheiro;
@@ -49,11 +50,14 @@ void setup() {
   size(900, 700);
   frameRate(60);
 
-  dinheiro = 100;
+  dinheiro = 1000;
 
   grid = criaGrid();
   adj = criaAdjacencia();
   grafo = new Grafo(adj);
+  
+  int linhaDestinoAleatoria = (int)random(n); // Sorteia uma linha (de 0 a 11)
+  destinoFinal = index(linhaDestinoAleatoria, f - 1); // Define o destino na última coluna
   
   tempoProximaHorda = millis() + tempoEntreHordas;
   
@@ -62,41 +66,36 @@ void setup() {
 // =========================================
 // =========================================
 
+// Substitua toda a sua função draw() por esta
 void draw() {
-  mostraGrid();
+  // Desenha o grafo (chão, casa, etc.)
+  grafo.desenhar(null, destinoFinal);
 
-  // recalcula o caminho do grafo (para desenho)
-  int origem = index(0, 0);
-  int destino = index(n - 1, f - 1);
-  ArrayList<Integer> caminhoAtual = grafo.dijkstra(origem, destino);
-
-  grafo.desenhar(caminhoAtual);
-  
-
-//  loop do zumbi
+  // Loop dos zumbis 
   for (int i = inimigos.size() - 1; i >= 0; i--) {
     Inimigo z = inimigos.get(i);
     if (z.estaVivo) {
-      z.atualizarCaminho(caminhoAtual, grafo);
+      ArrayList<Integer> novoCaminho = grafo.dijkstra(z.getPosicaoAtualIndex(grafo), destinoFinal);
+      z.atualizarCaminho(novoCaminho, grafo);
+      
       z.move();
       z.desenha();
     } else {
       dinheiro += z.recompensa;
       inimigos.remove(i);
-      println("Zumbi derrotado! Dinheiro atual: " + dinheiro);
     }
   }
   
-  
-// loop das torres
+  //Loop das torres
   for (Torre t : torres) {
     t.atualizar(1.0 / frameRate, inimigos);
     t.show(torre); 
   }
 
-  mostraDinheiro();
+  //Lógica do jogo e interface
   gerenciarHordas();
-  mostraInfoHorda(); 
+  mostraDinheiro();
+  mostraInfoHorda();
 }
 
 
@@ -218,8 +217,12 @@ void gerenciarHordas() {
 
 
 void spawnZombie() {
-  int origem = index(0, 0);
+ int linhaAleatoria = (int)random(n); // Sorteia um número de 0 a 11 (nossas linhas)
+  int origem = index(linhaAleatoria, 0); // Ponto de origem é na linha sorteada, coluna 0
+  
   int destino = index(n - 1, f - 1);
+  
+  // 3. Calcula o caminho a partir do novo ponto de origem
   ArrayList<Integer> caminho = grafo.dijkstra(origem, destino);
 
   if (!caminho.isEmpty()) {
