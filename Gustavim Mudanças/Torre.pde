@@ -69,7 +69,6 @@ void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
   
 // =========================================
 // =========================================
-
   void atirar(Inimigo inimigo) {
     float velBala = 5.0;
     float dx = inimigo.x - this.x;
@@ -108,4 +107,3 @@ void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
     image(foto, this.x - 20, this.y - 45, 40, 60);
   }
 }
-
