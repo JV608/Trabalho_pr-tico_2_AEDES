@@ -5,6 +5,8 @@ abstract class Inimigo {
   boolean estaVivo;
   int recompensa;
 
+  abstract int getPosicaoAtualIndex(Grafo grafo);
+  
   Inimigo() {
     this.estaVivo = true;
   }
