@@ -23,7 +23,7 @@ int tempoEntreSpawns = 300;
 int tempoUltimoSpawn = 0;
 
 // Variáveis de Imagem
-PImage grama1, grama2, pedra, torre1, torre2, balaImg, casa;
+PImage grama1, grama2, pedra, torre1, torre2, balaImg, casa, areia;
 PImage zumbi1, zumbi2, zumbi3;
 PImage[] zumbiImgs;
 PImage creeper1, creeper2, creeper3, creeper4, creeper5, creeper6; // Novo
@@ -47,6 +47,7 @@ void setup() {
   grama1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama1.png");
   grama2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama2.png");
   pedra  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/pedra.png");
+  areia  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Areia.png");
   zumbi1  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/1_Zombie.png");
   zumbi2  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/2_Zombie.png");
   zumbi3  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/3_Zombie.png");
@@ -418,3 +419,4 @@ void keyPressed() {
 
 // =========================================
 // =========================================
+
