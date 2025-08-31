@@ -4,7 +4,7 @@ class Grafo {
   int[][] matrizAdj;
   PVector[] posicoes; // Posições das partículas (nós do grafo)
   PVector[] velocidades; // Velocidades das partículas
-  float raio = 20; //
+  float raio = 20;
  
   int n = 12;
   int f = 22;
@@ -12,9 +12,6 @@ class Grafo {
   boolean[] ocupado;
   int[] tiposolo;
 
-  
-  
-  // Construtor da classe Grafo
   Grafo(int numVertices) {
     this.numVertices = numVertices;
     matrizAdj = new int[numVertices][numVertices];
@@ -78,7 +75,6 @@ class Grafo {
   }
 }
 
-   
 
 void desenhar(ArrayList<Integer> caminho) {
   textAlign(CENTER);
@@ -118,7 +114,7 @@ void desenhar(ArrayList<Integer> caminho) {
   //Desenha a pedra
   for(int i = 0; i < numVertices; i++) {
     if (ocupado[i]) {
-      // Antes de desenhar, verifica se não há uma torre no local
+      // Antes de desenhar, verifica se não tem uma torre no local
       boolean temTorre = false;
       for (Torre t : torres) {
         if (dist(t.x, t.y, posicoes[i].x, posicoes[i].y) < 1) {
@@ -192,3 +188,4 @@ void desenhar(ArrayList<Integer> caminho) {
       return caminho;
     }    
 }
+
