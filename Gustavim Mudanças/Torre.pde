@@ -15,7 +15,7 @@ class Torre {
     this.alcance = alcance;
     this.cadencia = cadencia;
     this.custo = custo;
-    this.tempoDesdeUltimoBala = 0; // CORRIGIDO: Inicializado em 0
+    this.tempoDesdeUltimoBala = 0; 
     this.nivel = 1;
     this.balas = new ArrayList<Bala>();
   }
@@ -69,6 +69,7 @@ void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
   
 // =========================================
 // =========================================
+
   void atirar(Inimigo inimigo) {
     float velBala = 5.0;
     float dx = inimigo.x - this.x;
@@ -107,3 +108,4 @@ void atualizar(float deltaTime, ArrayList<Inimigo> listaDeInimigos) {
     image(foto, this.x - 20, this.y - 45, 40, 60);
   }
 }
+
