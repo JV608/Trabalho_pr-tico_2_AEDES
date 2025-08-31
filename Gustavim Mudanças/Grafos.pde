@@ -4,7 +4,7 @@ class Grafo {
   int[][] matrizAdj;
   PVector[] posicoes; // Posições das partículas (nós do grafo)
   PVector[] velocidades; // Velocidades das partículas
-  float raio = 20;
+  float raio = 20; //
  
   int n = 12;
   int f = 22;
@@ -12,6 +12,9 @@ class Grafo {
   boolean[] ocupado;
   int[] tiposolo;
 
+  
+  
+  // Construtor da classe Grafo
   Grafo(int numVertices) {
     this.numVertices = numVertices;
     matrizAdj = new int[numVertices][numVertices];
@@ -75,13 +78,15 @@ class Grafo {
   }
 }
 
+   
 
-void desenhar(ArrayList<Integer> caminho) {
+void desenhar(ArrayList<Integer> caminho, int destinoIdx) { 
   textAlign(CENTER);
   
   float l = width / (float)f;
   float h = height / (float)n;
 
+  // 1. Desenha o chão
   for (int i = 0; i < numVertices; i++) {
     if (tiposolo[i] == 1) {
       image(grama1, posicoes[i].x - l/2, posicoes[i].y - h/2, l, h);
@@ -89,32 +94,10 @@ void desenhar(ArrayList<Integer> caminho) {
       image(grama2, posicoes[i].x - l/2, posicoes[i].y - h/2, l, h);
     }
   }
-
-  // Desenha as linhas (o caminho do zumbi) por cima do chão
-  for (int i = 0; i < numVertices; i++) {
-    for (int j = i + 1; j < numVertices; j++) {
-      if (matrizAdj[i][j] > 0) {
-        boolean destaque = false;
-        if (caminho != null) {
-          for (int k = 0; k < caminho.size() - 1; k++) {
-            if ((caminho.get(k) == i && caminho.get(k + 1) == j) ||
-                (caminho.get(k) == j && caminho.get(k + 1) == i)) {
-              destaque = true;
-              break;
-            }
-          }
-        }
-        stroke(destaque ? color(#E21EE3) : 0);
-        strokeWeight(2);
-        line(posicoes[i].x, posicoes[i].y, posicoes[j].x, posicoes[j].y);
-      }
-    }
-  }
   
-  //Desenha a pedra
+  // 2. Desenha as paredes
   for(int i = 0; i < numVertices; i++) {
     if (ocupado[i]) {
-      // Antes de desenhar, verifica se não tem uma torre no local
       boolean temTorre = false;
       for (Torre t : torres) {
         if (dist(t.x, t.y, posicoes[i].x, posicoes[i].y) < 1) {
@@ -128,8 +111,7 @@ void desenhar(ArrayList<Integer> caminho) {
     }
   }
   
-  //Desenha a casa do Villager
-  int destinoIdx = numVertices - 1;
+  // 3. Desenha a casa do Villager
   image(casa, posicoes[destinoIdx].x - 70, posicoes[destinoIdx].y - 80, 100, 100);
 }
 
@@ -188,4 +170,3 @@ void desenhar(ArrayList<Integer> caminho) {
       return caminho;
     }    
 }
-
