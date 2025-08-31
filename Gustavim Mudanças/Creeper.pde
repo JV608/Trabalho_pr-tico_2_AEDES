@@ -35,13 +35,11 @@ class Creeper extends Inimigo {
 
     PVector destino = caminho.get(idxDestino);
 
-    // Calcula o vetor de direção para o destino
     float dx = destino.x - x;
     float dy = destino.y - y;
     float distancia = dist(x, y, destino.x, destino.y);
 
-    // Se a distância for menor que a velocidade do próximo passo,
-    // "teleporta" para o destino para evitar ultrapassar e passa para o próximo.
+
     if (distancia < velocidade) {
       x = destino.x;
       y = destino.y;
@@ -49,17 +47,14 @@ class Creeper extends Inimigo {
       return;
     }
 
-    // Normaliza o vetor de direção (transforma em um vetor de comprimento 1)
     float dirX = dx / distancia;
     float dirY = dy / distancia;
     
-    // Move o inimigo na direção calculada com velocidade constante
     x += dirX * velocidade;
     y += dirY * velocidade;
   }
 
   int getPosicaoAtualIndex(Grafo grafo) {
-    // Garante que a linha e coluna não saiam dos limites do grid
     int linha = constrain(floor( (y - faixaAltura) / ((height - faixaAltura) / (float)n) ), 0, n-1);
     int coluna = constrain(floor(x / (width / (float)f)), 0, f-1);
     return linha * f + coluna;
@@ -85,3 +80,4 @@ class Creeper extends Inimigo {
     idxDestino = 1; // Reinicia o caminho para o próximo nó
   }
 }
+
