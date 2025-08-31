@@ -8,8 +8,8 @@ class zombie extends Inimigo{
  
   public zombie(ArrayList<Integer> caminhoIndices, Grafo grafo) {
     super(); 
-    this.hp = 3;
-    this.recompensa = 20;
+    this.hp = 4;
+    this.recompensa = 25;
     this.x = grafo.posicoes[caminhoIndices.get(0)].x;
     this.y = grafo.posicoes[caminhoIndices.get(0)].y;
     this.vx = 0;
@@ -19,10 +19,10 @@ class zombie extends Inimigo{
     
     caminho = new ArrayList<PVector>();
     for(int i : caminhoIndices) {
-      caminho.add(grafo.posicoes[i].copy()); // copia das posições do grafo
+      caminho.add(grafo.posicoes[i].copy()); 
     }
     
-    idxDestino = 1; // começa indo pro segundo nó
+    idxDestino = 1; 
   }
 
   @Override
@@ -33,8 +33,8 @@ class zombie extends Inimigo{
     float dy = destino.y - y;
   
     float fatorSuavizacao = 0.1; 
-    vx = lerp(vx, 0.05 * dx, fatorSuavizacao);
-    vy = lerp(vy, 0.05 * dy, fatorSuavizacao);
+    vx = lerp(vx, 0.03 * dx, fatorSuavizacao);
+    vy = lerp(vy, 0.03 * dy, fatorSuavizacao);
 
     x += vx;
     y += vy;
@@ -44,10 +44,16 @@ class zombie extends Inimigo{
       idxDestino++;
     }
  }
+ 
+   int getPosicaoAtualIndex(Grafo grafo) {
+      int linha = floor(y / (height / (float)n));
+      int coluna = floor(x / (width / (float)f));
+      return linha * f + coluna;
+  }
   
   @Override
   public void desenha(){
-    image(zumbi, x - 20, y - 25, 40, 40);
+    image(zumbi, x - 20, y - 25, 50, 50);
  }
   
   @Override
