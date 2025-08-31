@@ -85,7 +85,7 @@ class Grafo {
 
 
   // --- FUNÇÃO CORRIGIDA ---
-  void desenhar(ArrayList<Integer> caminho) {
+  void desenhar(ArrayList<Integer> caminho, int destinoIdx) {
     textAlign(CENTER);
 
     float l = width / (float) f;
@@ -103,27 +103,7 @@ class Grafo {
       }
     }
 
-    // Desenha as linhas (caminho)
-    for (int i = 0; i < numVertices; i++) {
-      for (int j = i + 1; j < numVertices; j++) {
-        if (matrizAdj[i][j] > 0) {
-          boolean destaque = false;
-          if (caminho != null) {
-            for (int k = 0; k < caminho.size() - 1; k++) {
-              if ((caminho.get(k) == i && caminho.get(k + 1) == j) ||
-                (caminho.get(k) == j && caminho.get(k + 1) == i)) {
-                destaque = true;
-                break;
-              }
-            }
-          }
-          stroke(destaque ? color(#E21EE3) : 0);
-          strokeWeight(2);
-          // Usa as posições corrigidas
-          line(posicoes[i].x, posicoes[i].y, posicoes[j].x, posicoes[j].y);
-        }
-      }
-    }
+
 
     // Desenha a pedra
     for (int i = 0; i < numVertices; i++) {
@@ -144,7 +124,7 @@ class Grafo {
     }
 
     // Desenha a casa do Villager
-    int destinoIdx = numVertices - 1;
+
     // Usa as posições corrigidas
     image(casa, posicoes[destinoIdx].x - 70, posicoes[destinoIdx].y - 80, 100, 100);
   }
