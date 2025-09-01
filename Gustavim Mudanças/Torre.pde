@@ -85,10 +85,10 @@ class Torre {
     if (nivel < 5) {
       this.nivel++;
       this.dano += 1; 
-      this.alcance += 5; 
+      this.alcance += 10; 
       this.custo += 25;
-      if (this.cadencia > 0.10) {
-        this.cadencia -= 0.10; 
+      if (this.cadencia > 0.15) {
+        this.cadencia -= 0.15; 
       }
       println("Torre aprimorada para o nivel: " + this.nivel);
     } else {
