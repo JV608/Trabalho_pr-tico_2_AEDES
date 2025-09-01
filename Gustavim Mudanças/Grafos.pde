@@ -10,122 +10,74 @@ class Grafo {
   int f = 22;
   int numVertices = n * f;
   boolean[] ocupado;
-  int[] tiposolo;
-
+  int[][] paredesConstruidas;
+  
+  int[][] grid; 
+  
   // Variável para a faixa de interface, assumimos que ela é global
   // Ou você pode passar como parâmetro no construtor
   float faixaAltura;
 
-  // Construtor 1 (não usado no seu main, mas corrigido por consistência)
-  Grafo(int numVertices, float faixaAltura) {
-    this.numVertices = numVertices;
-    this.faixaAltura = faixaAltura;
-    matrizAdj = new int[numVertices][numVertices];
-    ocupado = new boolean[numVertices];
-    posicoes = new PVector[numVertices];
-    velocidades = new PVector[numVertices];
-    inicializarPosicoes();
-    tiposolo = new int[numVertices];
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < f; j++) {
-        int idx = i * f + j;
-        if ((i + j) % 2 == 0) {
-          tiposolo[idx] = 0;
-        } else {
-          tiposolo[idx] = 1;
-        }
-      }
-    }
-  }
-
-  // Construtor 2 (o que é usado no seu main)
-  Grafo(int[][] adj, float faixaAltura) {
+ 
+   Grafo(int[][] adj, int[][] grid, float faixaAltura) {
     this.numVertices = adj.length;
     this.faixaAltura = faixaAltura;
-    matrizAdj = adj;
-    ocupado = new boolean[numVertices];
+    this.matrizAdj = adj;
+    this.grid = grid; // <<< ATRIBUI A MATRIZ 'grid' AQUI
+    this.ocupado = new boolean[numVertices];
+    this.posicoes = new PVector[numVertices];
+    this.paredesConstruidas = new int[n][f];
 
-    posicoes = new PVector[numVertices];
-    velocidades = new PVector[numVertices];
     inicializarPosicoes();
-    tiposolo = new int[numVertices];
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < f; j++) {
-        int idx = i * f + j;
-        if ((i + j) % 2 == 0) {
-          tiposolo[idx] = 0;
-        } else {
-          tiposolo[idx] = 1;
-        }
-      }
-    }
   }
+
+
+  
 
   void adicionarAresta(int i, int j) {
     matrizAdj[i][j] = 1;
     matrizAdj[j][i] = 1;
   }
 
-  // --- FUNÇÃO CORRIGIDA ---
   void inicializarPosicoes() {
     float l = width / (float) f;
-    // A altura do jogo agora é o tamanho total menos a faixa
     float alturaAreaJogo = height - faixaAltura;
     float h = alturaAreaJogo / (float) n;
 
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < f; j++) {
-        int idx = index(i, j);
-        // A POSIÇÃO Y É AJUSTADA AQUI
+        int idx = i * f + j;
         posicoes[idx] = new PVector(j * l + l / 2, i * h + h / 2 + faixaAltura);
-        velocidades[idx] = new PVector(0, 0);
       }
     }
   }
 
 
-  // --- FUNÇÃO CORRIGIDA ---
-  void desenhar(ArrayList<Integer> caminho, int destinoIdx) {
-    textAlign(CENTER);
-
+  
+   void desenharCenario(int destinoIdx) {
     float l = width / (float) f;
     float alturaAreaJogo = height - faixaAltura;
     float h = alturaAreaJogo / (float) n;
 
-    // Desenha as células (grama)
-    for (int i = 0; i < numVertices; i++) {
-      // Usa as posições corrigidas
-      PVector pos = posicoes[i];
-      if (tiposolo[i] == 1) {
+    // Desenha as células (grama e pedras) a partir da matriz 'grid'
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < f; j++) {
+        PVector pos = posicoes[index(i, j)];
+        if (paredesConstruidas[i][j] == 1) { // SE HÁ PAREDE CONSTRUÍDA
+        image(golen, pos.x - l / 2, pos.y - h / 2, l, h);
+      } else if (grid[i][j] == 1) { // SE É GRAMA (DO MAPA ORIGINAL)
         image(grama1, pos.x - l / 2, pos.y - h / 2, l, h);
-      } else {
-        image(grama2, pos.x - l / 2, pos.y - h / 2, l, h);
+      } else if (grid[i][j] == 0) { // SE É PEDRA (DO MAPA ORIGINAL)
+        image(pedra, pos.x - l / 2, pos.y - h / 2, l, h);
+      }
       }
     }
-
-
-
-    // Desenha a pedra
-    for (int i = 0; i < numVertices; i++) {
-      if (ocupado[i]) {
-        boolean temTorre = false;
-        // Percorre a lista de torres para evitar desenhar pedra embaixo de torre
-        for (Torre t : torres) {
-          if (dist(t.x, t.y, posicoes[i].x, posicoes[i].y) < 1) {
-            temTorre = true;
-            break;
-          }
-        }
-        if (!temTorre) {
-          // Usa as posições corrigidas
-          image(pedra, posicoes[i].x - l / 2, posicoes[i].y - h / 2, l, h);
-        }
-      }
-    }
-
-    // Desenha a casa do Villager
+    
+    // Desenha a casa no final do caminho
     image(casa, posicoes[destinoIdx].x - 70, posicoes[destinoIdx].y - 50, 150, 150);
   }
+  
+  
 
   // =========================================
   // ===           dijkstra                ===
