@@ -72,13 +72,28 @@ void setup() {
   dinheiro = 1000;
   jogoYInicial = faixaAltura; // O jogo começa abaixo da faixa
 
-  grid = criaGrid();
+   grid = new int[][]{
+  {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
+  {1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1},
+  {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1},
+  {1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1},
+  {1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1},
+  {1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1},
+  {1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1},
+  {1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1},
+  {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1},
+  {1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1},
+  {1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1},
+  {1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0}
+};
   adj = criaAdjacencia();
   float faixaAltura = 50;
   grafo = new Grafo(adj, faixaAltura);
   int linhaCasaAleatoria = (int)random(n);
   destinoCasa = index(linhaCasaAleatoria, f - 1);
   // Define o destino nesta posição
+
+  
 
 
   tempoProximaHorda = millis() + tempoEntreHordas;
@@ -99,7 +114,7 @@ void draw() {
   // recalcula o caminho do grafo (para desenho)
   int origem = index(0, 0);
   ArrayList<Integer> caminhoAtual = grafo.dijkstra(origem, destinoCasa);
-  grafo.desenhar(caminhoAtual, destinoCasa);
+ // grafo.desenhar(caminhoAtual, destinoCasa);
 
 
   //  loop do inimigo
@@ -180,33 +195,27 @@ void mostraonome() {
 }
 
 
-int[][] criaGrid() {
-  int[][] m = new int[n][f];
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < f; j++) {
-      m[i][j] = (0);
-    }
-  }
-  return m;
-}
 
-void mostraGrid() {
-  // Ajuste a altura do grid para o espaço abaixo da faixa
+  
+  void mostraGrid() {
   float alturaAreaJogo = height - faixaAltura;
   float l = width / (float) f;
   float h = alturaAreaJogo / (float) n;
+
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < f; j++) {
-      stroke(200);
-      // Ajuste o preenchimento para as imagens (grama, pedra, etc.)
-      if (grid[i][j] == 0) { // Grama
+      // Use a sua matriz 'grid' para determinar qual imagem desenhar
+      if (grid[i][j] == 1) {
+        // Se o valor for 1, desenhe a grama.
         image(grama1, j * l, i * h + faixaAltura, l, h);
-      } else if (grid[i][j] == 1) { // Pedra/Obstáculo
+      } else if (grid[i][j] == 0) {
+        // Se o valor for 0, desenhe a pedra.
         image(pedra, j * l, i * h + faixaAltura, l, h);
       }
     }
   }
 }
+  
 
 int index(int i, int j) {
   return i * f + j;
@@ -223,39 +232,54 @@ int coluna(int index) {
 int[][] criaAdjacencia() {
   int total = n * f;
   int[][] adj = new int[total][total];
+  
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < f; j++) {
       int atual = index(i, j);
+
+      // AQUI ESTÁ O AJUSTE: SÓ CONSTRUA ARESTAS SE A CÉLULA ATUAL NÃO FOR UMA PEDRA
+      if (grid[i][j] == 0) {
+        continue; // Se for pedra, não adicione arestas a partir dela
+      }
+
       // Cima
       if (i > 0) {
         int vizinho = index(i - 1, j);
-        adj[atual][vizinho] = 1;
-        adj[vizinho][atual] = 1;
+        // AQUI ESTÁ O AJUSTE: SÓ CONECTE SE O VIZINHO NÃO FOR UMA PEDRA
+        if (grid[i - 1][j] == 1) {
+          adj[atual][vizinho] = 1;
+          adj[vizinho][atual] = 1;
+        }
       }
 
       // Baixo
       if (i < n - 1) {
         int vizinho = index(i + 1, j);
-        adj[atual][vizinho] = 1;
-        adj[vizinho][atual] = 1;
+        if (grid[i + 1][j] == 1) {
+          adj[atual][vizinho] = 1;
+          adj[vizinho][atual] = 1;
+        }
       }
 
       // Esquerda
       if (j > 0) {
         int vizinho = index(i, j - 1);
-        adj[atual][vizinho] = 1;
-        adj[vizinho][atual] = 1;
+        if (grid[i][j - 1] == 1) {
+          adj[atual][vizinho] = 1;
+          adj[vizinho][atual] = 1;
+        }
       }
 
       // Direita
       if (j < f - 1) {
         int vizinho = index(i, j + 1);
-        adj[atual][vizinho] = 1;
-        adj[vizinho][atual] = 1;
+        if (grid[i][j + 1] == 1) {
+          adj[atual][vizinho] = 1;
+          adj[vizinho][atual] = 1;
+        }
       }
     }
   }
-
   return adj;
 }
 
@@ -419,4 +443,3 @@ void keyPressed() {
 
 // =========================================
 // =========================================
-
