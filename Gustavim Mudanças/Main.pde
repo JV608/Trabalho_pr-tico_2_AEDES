@@ -1,4 +1,4 @@
-//GRIDS
+// GRIDS
 int[][] grid;
 int[][] adj;
 int n = 12;
@@ -6,11 +6,11 @@ int f = 22;
 int vidaCasa = 3;
 int destinoCasa;
 
-//Dinheiro
+// Dinheiro
 int dinheiro;
 float custoParede = 20;
 
-//Horda
+// Horda
 int hordaAtual = 0;
 int zumbisPorHorda = 0;
 int creepersPorHorda = 0;
@@ -22,7 +22,7 @@ int tempoEntreSpawns = 300;
 int tempoUltimoSpawn = 0;
 
 // Variáveis de Imagem
-PImage grama1, grama2, pedra,golen, torre1, torre2, balaImg, casa, areia;
+PImage grama1, grama2, pedra, golen, torre1, torre2, balaImg, casa, areia;
 PImage zumbi1, zumbi2, zumbi3;
 PImage[] zumbiImgs;
 PImage creeper1, creeper2, creeper3, creeper4, creeper5, creeper6;
@@ -31,6 +31,7 @@ PImage[] creeperImgs;
 Grafo grafo;
 ArrayList<Inimigo> inimigos = new ArrayList<Inimigo>();
 ArrayList<Torre> torres = new ArrayList<Torre>();
+ArrayList<Parede> paredes = new ArrayList<Parede>();
 float custoTorreInicial = 50;
 
 // Variáveis para a faixa de interface
@@ -44,11 +45,11 @@ void setup() {
   golen = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Iron_Golen.png");
   grama1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama1.png");
   grama2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama2.png");
-  pedra  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/pedra.png");
-  areia  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Areia.png");
-  zumbi1  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/1_Zombie.png");
-  zumbi2  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/2_Zombie.png");
-  zumbi3  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/3_Zombie.png");
+  pedra = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/pedra.png");
+  areia = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Areia.png");
+  zumbi1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/1_Zombie.png");
+  zumbi2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/2_Zombie.png");
+  zumbi3 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/3_Zombie.png");
   zumbiImgs = new PImage[]{zumbi1, zumbi2, zumbi3};
   torre1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Torre1.png");
   torre2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Torre2.png");
@@ -68,24 +69,22 @@ void setup() {
   dinheiro = 1000;
   jogoYInicial = faixaAltura;
 
-  
   grid = new int[][]{
     {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
     {1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1},
     {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1},
     {1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1},
-    {1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1},
-    {1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1},
+    {1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1},
+    {1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1},
     {1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1},
     {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1},
-    {1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1},
+    {1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1},
     {1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1},
-    {1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0}
+    {1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0}
   };
   
   adj = criaAdjacencia();
-  
   
   float faixaAltura = 50;
   grafo = new Grafo(adj, grid, faixaAltura);
@@ -103,17 +102,53 @@ void draw() {
   fill(50);
   noStroke();
   rect(0, 0, width, faixaAltura);
-
   
   grafo.desenharCenario(destinoCasa);
-  
-  
+
+  // Loop para desenhar e atualizar as paredes
+  for (int i = paredes.size() - 1; i >= 0; i--) {
+    Parede p = paredes.get(i);
+    p.show();
+    if (p.foiDestruida()) {
+      // Se a parede foi destruída, remova-a da lista e do grafo
+      int paredeIdx = index(p.getLinha(), p.getColuna());
+      grafo.matrizAdj = criaAdjacencia(); // Recria a matriz de adjacência do zero
+      grafo.ocupado[paredeIdx] = false; // Ocupação removida
+      paredes.remove(i);
+      
+      // Recalcule o caminho para todos os inimigos
+      for (Inimigo inimigo : inimigos) {
+        int origem = inimigo.getPosicaoAtualIndex(grafo);
+        ArrayList<Integer> novoCaminho = grafo.dijkstra(origem, destinoCasa);
+        inimigo.atualizarCaminho(novoCaminho, grafo);
+      }
+    }
+  }
 
   // loop do inimigo
   for (int i = inimigos.size() - 1; i >= 0; i--) {
     Inimigo inimigo = inimigos.get(i);
     if (inimigo.estaVivo) {
-      inimigo.move();
+      // Verifique se o inimigo está perto de uma parede
+      Parede paredeAlvo = null;
+      for (Parede p : paredes) {
+        if (dist(inimigo.x, inimigo.y, p.x, p.y) < 20) {
+          paredeAlvo = p;
+          break;
+        }
+      }
+      
+      if (paredeAlvo != null) {
+        // O inimigo ataca a parede
+        if (millis() - inimigo.tempoUltimoAtaque > inimigo.tempoEntreAtaques) {
+          paredeAlvo.tomarDano(inimigo.danoPorSegundo);
+          inimigo.tempoUltimoAtaque = millis();
+        }
+      } else {
+        // Nenhuma parede próxima, o inimigo se move normalmente
+        inimigo.move();
+      }
+      
       inimigo.desenha();
       if (dist(inimigo.x, inimigo.y, grafo.posicoes[destinoCasa].x, grafo.posicoes[destinoCasa].y) < 10) {
         vidaCasa--;
@@ -126,7 +161,7 @@ void draw() {
       inimigos.remove(i);
     }
   }
-
+  
   // loop das torres
   for (Torre t : torres) {
     t.atualizar(1.0 / frameRate, inimigos);
@@ -151,7 +186,6 @@ void draw() {
     noLoop();
   }
 }
-
 
 void mostraVidaCasa() {
   textSize(24);
@@ -297,7 +331,6 @@ void spawnCreeper() {
   }
 }
 
-
 void mousePressed() {
   boolean obstaculoConstruido = false;
   
@@ -326,32 +359,33 @@ void mousePressed() {
       }
     }
 
-    // ...
-if (mouseButton == RIGHT) {
-  if (dinheiro >= custoParede) {
-    if (grid[linha][coluna] == 1 && !grafo.ocupado[idx] && idx != destinoCasa) {
-      dinheiro -= custoParede;
+    if (mouseButton == RIGHT) {
+      if (dinheiro >= custoParede) {
+        if (grid[linha][coluna] == 1 && !grafo.ocupado[idx] && idx != destinoCasa) {
+          dinheiro -= custoParede;
+          
+          paredes.add(new Parede(grafo.posicoes[idx].x, grafo.posicoes[idx].y, custoParede, golen));
 
- 
-      grafo.paredesConstruidas[linha][coluna] = 1; // <-- MARCA A POSIÇÃO NA NOVA MATRIZ
-
-      grafo.ocupado[idx] = true;
-      for (int j = 0; j < grafo.numVertices; j++) {
-        grafo.matrizAdj[idx][j] = 0;
-        grafo.matrizAdj[j][idx] = 0;
+          grafo.ocupado[idx] = true;
+          
+          int custoDaParedeNoGrafo = 40;
+          for (int j = 0; j < grafo.numVertices; j++) {
+            if (grafo.matrizAdj[idx][j] > 0) {
+              grafo.matrizAdj[idx][j] = custoDaParedeNoGrafo;
+              grafo.matrizAdj[j][idx] = custoDaParedeNoGrafo;
+            }
+          }
+          obstaculoConstruido = true;
+          println("Parede construída! Dinheiro restante: " + dinheiro);
+        } else {
+          println("Não é possível construir uma parede aqui!");
+        }
+      } else {
+        println("Dinheiro insuficiente para construir a parede!");
       }
-      obstaculoConstruido = true;
-      println("Parede construída! Dinheiro restante: " + dinheiro);
-    } else {
-      println("Não é possível construir uma parede aqui!");
     }
-  } else {
-    println("Dinheiro insuficiente para construir a parede!");
   }
-}
-
-  }
-
+  
   if (obstaculoConstruido) {
     for (Inimigo inimigo : inimigos) {
       int origem = inimigo.getPosicaoAtualIndex(grafo);
