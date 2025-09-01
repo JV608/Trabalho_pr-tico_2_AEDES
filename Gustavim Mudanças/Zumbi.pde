@@ -1,5 +1,5 @@
 class zombie extends Inimigo {
-    
+  float velocidadebase;
   float velocidade;
   float d;
   int cor;
@@ -20,6 +20,7 @@ class zombie extends Inimigo {
     this.x = grafo.posicoes[caminhoIndices.get(0)].x;
     this.y = grafo.posicoes[caminhoIndices.get(0)].y;
     this.velocidade = 2;
+    this.velocidadebase = 2;
     this.d = 50;
     this.cor = color((int) random(255), (int) random(255), (int) random(255));
     this.animacao = imgs;
@@ -37,34 +38,49 @@ class zombie extends Inimigo {
   }
 
   @Override
-  public void move() {
-    if (idxDestino >= caminho.size()) return;
+public void move() {
+  if (idxDestino >= caminho.size()) return;
 
-    PVector destino = caminho.get(idxDestino);
-    
-    float dx = destino.x - x;
-    float dy = destino.y - y;
-    float distancia = dist(x, y, destino.x, destino.y);
+  // ---- Lógica de verificação da areia ----
+  // 1. Obtém a célula atual do inimigo
+  int linhaAtual = floor((y - faixaAltura) / (height - faixaAltura) * n);
+  int colunaAtual = floor(x / width * f);
 
-    if (distancia < velocidade) {
-      x = destino.x;
-      y = destino.y;
-      idxDestino++;
-      return;
+  boolean emAreia = false;
+  for (Areia a : areias) {
+    if (a.getLinha() == linhaAtual && a.getColuna() == colunaAtual) {
+      emAreia = true;
+      break;
     }
-    
-    float dirX = dx / distancia;
-    float dirY = dy / distancia;
-    
-    x += dirX * velocidade;
-    y += dirY * velocidade;
   }
-  
-  int getPosicaoAtualIndex(Grafo grafo) {
-    int linha = constrain(floor( (y - faixaAltura) / ((height - faixaAltura) / (float)n) ), 0, n-1);
-    int coluna = constrain(floor(x / (width / (float)f)), 0, f-1);
-    return linha * f + coluna;
+
+  // 2. Ajusta a velocidade com base na verificação
+  if (emAreia) {
+    velocidade = velocidadebase / 2.0; // Reduz a velocidade pela metade
+  } else {
+    velocidade = velocidadebase; // Volta para a velocidade normal
   }
+  // ---- Fim da lógica de verificação da areia ----
+
+  PVector destino = caminho.get(idxDestino);
+
+  float dx = destino.x - x;
+  float dy = destino.y - y;
+  float distancia = dist(x, y, destino.x, destino.y);
+
+  if (distancia < velocidade) {
+    x = destino.x;
+    y = destino.y;
+    idxDestino++;
+    return;
+  }
+
+  float dirX = dx / distancia;
+  float dirY = dy / distancia;
+
+  x += dirX * velocidade;
+  y += dirY * velocidade;
+}
   
   @Override
   public void desenha(){
@@ -107,4 +123,10 @@ class zombie extends Inimigo {
     caminho = novoCaminho;
     idxDestino = 1;
   }
+  @Override
+int getPosicaoAtualIndex(Grafo grafo) {
+  int linha = constrain(floor( (y - faixaAltura) / ((height - faixaAltura) / (float)n) ), 0, n-1);
+  int coluna = constrain(floor(x / (width / (float)f)), 0, f-1);
+  return linha * f + coluna;
+}
 }
