@@ -9,17 +9,24 @@ class Creeper extends Inimigo {
   int frameAtual = 0;
   int contadorFrames = 0;
   int velocidadeAnimacao = 10;
+  
+  int maxHp;
 
   public Creeper(ArrayList<Integer> caminhoIndices, Grafo grafo, PImage[] imgs) {
     super();
-    this.hp = 15;
+    this.hp = 4;
+    this.maxHp = 4;
     this.recompensa = 35;
     this.x = grafo.posicoes[caminhoIndices.get(0)].x;
     this.y = grafo.posicoes[caminhoIndices.get(0)].y;
-    this.velocidade = 4; // Velocidade constante (maior que a do zumbi)
+    this.velocidade = 4;
     this.d = 50;
     this.cor = color((int) random(255), (int) random(255), (int) random(255));
     this.animacao = imgs;
+
+    // NOVAS VARIAVEIS
+    this.danoPorSegundo = 25; // Dano do creeper por segundo na parede (maior que o zumbi)
+    this.tempoEntreAtaques = 750; // Um ataque a cada 0.75 segundo
 
     caminho = new ArrayList<PVector>();
     for (int i : caminhoIndices) {
@@ -31,14 +38,13 @@ class Creeper extends Inimigo {
 
   @Override
   public void move() {
-    if (idxDestino >= caminho.size()) return; // Terminou o caminho
+    if (idxDestino >= caminho.size()) return;
 
     PVector destino = caminho.get(idxDestino);
 
     float dx = destino.x - x;
     float dy = destino.y - y;
     float distancia = dist(x, y, destino.x, destino.y);
-
 
     if (distancia < velocidade) {
       x = destino.x;
@@ -68,6 +74,28 @@ class Creeper extends Inimigo {
       contadorFrames = 0;
       frameAtual = (frameAtual + 1) % animacao.length;
     }
+    
+    desenhaBarraVida();
+  }
+
+  private void desenhaBarraVida() {
+    float barraLargura = 30;
+    float barraAltura = 5;
+    float barraX = x - barraLargura / 2;
+    float barraY = y - 35;
+    
+    float vidaPorcentagem = (float)hp / (float)maxHp;
+    
+    noStroke();
+    fill(50, 50, 50);
+    rect(barraX, barraY, barraLargura, barraAltura);
+    
+    fill(100, 255, 100);
+    rect(barraX, barraY, barraLargura * vidaPorcentagem, barraAltura);
+    
+    stroke(0);
+    noFill();
+    rect(barraX, barraY, barraLargura, barraAltura);
   }
 
   @Override
@@ -77,8 +105,6 @@ class Creeper extends Inimigo {
       novoCaminho.add(grafo.posicoes[i].copy());
     }
     caminho = novoCaminho;
-    idxDestino = 1; // Reinicia o caminho para o próximo nó
+    idxDestino = 1;
   }
 }
-
-
