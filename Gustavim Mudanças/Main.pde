@@ -13,21 +13,20 @@ float custoParede = 20;
 //Horda
 int hordaAtual = 0;
 int zumbisPorHorda = 0;
-int creepersPorHorda = 0; // Novo
+int creepersPorHorda = 0;
 int inimigosSpawdadosDaHorda = 0;
 boolean hordaEmAndamento = false;
-int tempoEntreHordas = 3000; // 3 segundos de espera entre as hordas
+int tempoEntreHordas = 3000;
 int tempoProximaHorda = 0;
 int tempoEntreSpawns = 300;
-// 0.3 segundos entre cada inimigo da mesma horda
 int tempoUltimoSpawn = 0;
 
 // Variáveis de Imagem
-PImage grama1, grama2, pedra, torre1, torre2, balaImg, casa, areia;
+PImage grama1, grama2, pedra,golen, torre1, torre2, balaImg, casa, areia;
 PImage zumbi1, zumbi2, zumbi3;
 PImage[] zumbiImgs;
-PImage creeper1, creeper2, creeper3, creeper4, creeper5, creeper6; // Novo
-PImage[] creeperImgs; // Novo
+PImage creeper1, creeper2, creeper3, creeper4, creeper5, creeper6;
+PImage[] creeperImgs;
 
 Grafo grafo;
 ArrayList<Inimigo> inimigos = new ArrayList<Inimigo>();
@@ -35,15 +34,14 @@ ArrayList<Torre> torres = new ArrayList<Torre>();
 float custoTorreInicial = 50;
 
 // Variáveis para a faixa de interface
-float faixaAltura = 70; // Altura da faixa superior
+float faixaAltura = 70;
 float jogoYInicial;
-// Posição Y onde o jogo começa
 
 // =========================================
 // =========================================
 
 void setup() {
-
+  golen = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Iron_Golen.png");
   grama1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama1.png");
   grama2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama2.png");
   pedra  = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/pedra.png");
@@ -56,8 +54,6 @@ void setup() {
   torre2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Torre2.png");
   balaImg = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/bala.png");
   casa = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Casa.png");
-
-  // Carregar imagens do Creeper 
   creeper1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/creeper-1.png");
   creeper2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/creeper-2.png");
   creeper3 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/creeper-3.png");
@@ -70,32 +66,32 @@ void setup() {
   frameRate(60);
 
   dinheiro = 1000;
-  jogoYInicial = faixaAltura; // O jogo começa abaixo da faixa
-
-   grid = new int[][]{
-  {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
-  {1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1},
-  {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1},
-  {1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1},
-  {1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1},
-  {1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1},
-  {1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1},
-  {1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1},
-  {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1},
-  {1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1},
-  {1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1},
-  {1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0}
-};
-  adj = criaAdjacencia();
-  float faixaAltura = 50;
-  grafo = new Grafo(adj, faixaAltura);
-  int linhaCasaAleatoria = (int)random(n);
-  destinoCasa = index(linhaCasaAleatoria, f - 1);
-  // Define o destino nesta posição
+  jogoYInicial = faixaAltura;
 
   
-
-
+  grid = new int[][]{
+    {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
+    {1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1},
+    {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1},
+    {1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1},
+    {1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1},
+    {1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1},
+    {1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1},
+    {1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1},
+    {1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0}
+  };
+  
+  adj = criaAdjacencia();
+  
+  
+  float faixaAltura = 50;
+  grafo = new Grafo(adj, grid, faixaAltura);
+  int linhaCasaAleatoria = (int)random(n);
+  destinoCasa = index(linhaCasaAleatoria, f - 1);
+  
   tempoProximaHorda = millis() + tempoEntreHordas;
 }
 
@@ -104,20 +100,16 @@ void setup() {
 
 void draw() {
   background(0);
-  // Desenha o fundo da faixa de interface
   fill(50);
   noStroke();
   rect(0, 0, width, faixaAltura);
 
-  // Desenha o grid abaixo da faixa
-  mostraGrid();
-  // recalcula o caminho do grafo (para desenho)
-  int origem = index(0, 0);
-  ArrayList<Integer> caminhoAtual = grafo.dijkstra(origem, destinoCasa);
- // grafo.desenhar(caminhoAtual, destinoCasa);
+  
+  grafo.desenharCenario(destinoCasa);
+  
+  
 
-
-  //  loop do inimigo
+  // loop do inimigo
   for (int i = inimigos.size() - 1; i >= 0; i--) {
     Inimigo inimigo = inimigos.get(i);
     if (inimigo.estaVivo) {
@@ -126,9 +118,8 @@ void draw() {
       if (dist(inimigo.x, inimigo.y, grafo.posicoes[destinoCasa].x, grafo.posicoes[destinoCasa].y) < 10) {
         vidaCasa--;
         inimigos.remove(i);
-        // Remove o inimigo que atacou
         println("A VILA SOFREU DANO! Vida restante: " + vidaCasa);
-        continue; // Pula para o próximo inimigo para evitar erros
+        continue;
       }
     } else {
       dinheiro += inimigo.recompensa;
@@ -152,7 +143,7 @@ void draw() {
   mostraonome();
   mostraVidaCasa();
 
-if (vidaCasa <= 0) {
+  if (vidaCasa <= 0) {
     fill(255, 0, 0);
     textSize(100);
     textAlign(CENTER, CENTER);
@@ -161,10 +152,6 @@ if (vidaCasa <= 0) {
   }
 }
 
-
-// =========================================
-// ===== FUNÇÕES DE LÓGICA E UTILIDADE =====
-// =========================================
 
 void mostraVidaCasa() {
   textSize(24);
@@ -175,7 +162,7 @@ void mostraVidaCasa() {
 
 void mostraDinheiro() {
   textSize(24);
-  fill(255, 215, 0); // Cor de ouro
+  fill(255, 215, 0);
   textAlign(RIGHT, CENTER);
   text("Moedas: " + dinheiro, width - 20, faixaAltura / 2);
 }
@@ -186,36 +173,13 @@ void mostraInfoHorda() {
   textAlign(LEFT, CENTER);
   text("Horda: " + hordaAtual, 20, faixaAltura / 2);
 }
+
 void mostraonome() {
   textSize(34);
   fill(70, 150, 110);
-
   textAlign(LEFT, CENTER);
   text("PROTEJA A VILA", 335, faixaAltura / 2);
 }
-
-
-
-  
-  void mostraGrid() {
-  float alturaAreaJogo = height - faixaAltura;
-  float l = width / (float) f;
-  float h = alturaAreaJogo / (float) n;
-
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < f; j++) {
-      // Use a sua matriz 'grid' para determinar qual imagem desenhar
-      if (grid[i][j] == 1) {
-        // Se o valor for 1, desenhe a grama.
-        image(grama1, j * l, i * h + faixaAltura, l, h);
-      } else if (grid[i][j] == 0) {
-        // Se o valor for 0, desenhe a pedra.
-        image(pedra, j * l, i * h + faixaAltura, l, h);
-      }
-    }
-  }
-}
-  
 
 int index(int i, int j) {
   return i * f + j;
@@ -237,22 +201,18 @@ int[][] criaAdjacencia() {
     for (int j = 0; j < f; j++) {
       int atual = index(i, j);
 
-      // AQUI ESTÁ O AJUSTE: SÓ CONSTRUA ARESTAS SE A CÉLULA ATUAL NÃO FOR UMA PEDRA
       if (grid[i][j] == 0) {
-        continue; // Se for pedra, não adicione arestas a partir dela
+        continue;
       }
 
-      // Cima
       if (i > 0) {
         int vizinho = index(i - 1, j);
-        // AQUI ESTÁ O AJUSTE: SÓ CONECTE SE O VIZINHO NÃO FOR UMA PEDRA
         if (grid[i - 1][j] == 1) {
           adj[atual][vizinho] = 1;
           adj[vizinho][atual] = 1;
         }
       }
 
-      // Baixo
       if (i < n - 1) {
         int vizinho = index(i + 1, j);
         if (grid[i + 1][j] == 1) {
@@ -261,7 +221,6 @@ int[][] criaAdjacencia() {
         }
       }
 
-      // Esquerda
       if (j > 0) {
         int vizinho = index(i, j - 1);
         if (grid[i][j - 1] == 1) {
@@ -270,7 +229,6 @@ int[][] criaAdjacencia() {
         }
       }
 
-      // Direita
       if (j < f - 1) {
         int vizinho = index(i, j + 1);
         if (grid[i][j + 1] == 1) {
@@ -283,16 +241,12 @@ int[][] criaAdjacencia() {
   return adj;
 }
 
-// =========================================
-// =====         Hordas               =====
-// =========================================
 void gerenciarHordas() {
   if (!hordaEmAndamento && inimigos.isEmpty()) {
     if (millis() > tempoProximaHorda) {
       hordaAtual++;
-      zumbisPorHorda = hordaAtual; // A cada horda, aumenta 1 zumbi
+      zumbisPorHorda = hordaAtual;
 
-      // Lógica do Creeper
       if (hordaAtual >= 5 && (hordaAtual % 2 != 0)) {
         creepersPorHorda = (hordaAtual / 2) - 1;
       }
@@ -304,7 +258,6 @@ void gerenciarHordas() {
 
   if (hordaEmAndamento && inimigosSpawdadosDaHorda < zumbisPorHorda + creepersPorHorda) {
     if (millis() - tempoUltimoSpawn > tempoEntreSpawns) {
-      // Decide qual inimigo spawnar
       if (inimigosSpawdadosDaHorda < zumbisPorHorda) {
         spawnZombie();
       } else {
@@ -345,69 +298,58 @@ void spawnCreeper() {
 }
 
 
-// =========================================
-// =========================================
-
-
 void mousePressed() {
   boolean obstaculoConstruido = false;
+  
+  int linha = (int) ((mouseY - faixaAltura) / ((height - faixaAltura) / (float)n));
+  int coluna = (int) (mouseX / (width / (float)f));
 
-  if (mouseButton == LEFT) {
-    if (dinheiro >= custoTorreInicial) {
-      for (int i = 0; i < grafo.numVertices; i++) {
-        if (grafo.ocupado[i]) continue;
-        PVector pos = grafo.posicoes[i];
-        float l = width / (float)f;
-        float h = (height - faixaAltura) / (float)n;
+  if (linha >= 0 && linha < n && coluna >= 0 && coluna < f) {
+    int idx = index(linha, coluna);
 
-        if (mouseX >= pos.x - l / 2 && mouseX <= pos.x + l / 2 &&
-          mouseY >= pos.y - h / 2 && mouseY <= pos.y + h / 2 ) {
-
+    if (mouseButton == LEFT) {
+      if (dinheiro >= custoTorreInicial) {
+        if (grid[linha][coluna] == 0 && !grafo.ocupado[idx]) {
           dinheiro -= custoTorreInicial;
-          torres.add(new Torre(pos.x, pos.y, 2, 170, 0.9, custoTorreInicial));
-          grafo.ocupado[i] = true;
+          torres.add(new Torre(grafo.posicoes[idx].x, grafo.posicoes[idx].y, 2, 170, 0.9, custoTorreInicial));
+          grafo.ocupado[idx] = true;
           for (int j = 0; j < grafo.numVertices; j++) {
-            if (grafo.matrizAdj[i][j] > 0) {
-              grafo.matrizAdj[i][j] = 0;
-              grafo.matrizAdj[j][i] = 0;
-            }
+            grafo.matrizAdj[idx][j] = 0;
+            grafo.matrizAdj[j][idx] = 0;
           }
           obstaculoConstruido = true;
-          break;
+        } else {
+          println("Não é possível construir uma torre aqui!");
         }
+      } else {
+        println("Dinheiro insuficiente para construir a torre!");
       }
-    } else {
-      println("Dinheiro insuficiente para construir a torre!");
     }
+
+    // ...
+if (mouseButton == RIGHT) {
+  if (dinheiro >= custoParede) {
+    if (grid[linha][coluna] == 1 && !grafo.ocupado[idx] && idx != destinoCasa) {
+      dinheiro -= custoParede;
+
+ 
+      grafo.paredesConstruidas[linha][coluna] = 1; // <-- MARCA A POSIÇÃO NA NOVA MATRIZ
+
+      grafo.ocupado[idx] = true;
+      for (int j = 0; j < grafo.numVertices; j++) {
+        grafo.matrizAdj[idx][j] = 0;
+        grafo.matrizAdj[j][idx] = 0;
+      }
+      obstaculoConstruido = true;
+      println("Parede construída! Dinheiro restante: " + dinheiro);
+    } else {
+      println("Não é possível construir uma parede aqui!");
+    }
+  } else {
+    println("Dinheiro insuficiente para construir a parede!");
   }
+}
 
-  if (mouseButton == RIGHT) {
-    if (dinheiro >= custoParede) {
-      for (int i = 0; i < grafo.numVertices; i++) {
-        if (grafo.ocupado[i]) continue;
-        PVector pos = grafo.posicoes[i];
-        float l = width / (float)f;
-        float h = (height - faixaAltura) / (float)n;
-
-        if (mouseX >= pos.x - l / 2 && mouseX <= pos.x + l / 2 &&
-          mouseY >= pos.y - h / 2 && mouseY <= pos.y + h / 2) {
-
-          dinheiro -= custoParede;
-          grafo.ocupado[i] = true;
-          for (int j = 0; j < grafo.numVertices; j++) {
-            if (grafo.matrizAdj[i][j] > 0) {
-              grafo.matrizAdj[i][j] = 0;
-              grafo.matrizAdj[j][i] = 0;
-            }
-          }
-          obstaculoConstruido = true;
-          println("Parede construída! Dinheiro restante: " + dinheiro);
-          break;
-        }
-      }
-    } else {
-      println("Dinheiro insuficiente para construir a parede!");
-    }
   }
 
   if (obstaculoConstruido) {
@@ -419,15 +361,11 @@ void mousePressed() {
   }
 }
 
-// =========================================
-// =========================================
-
 void keyPressed() {
   if (key == 'u' || key == 'U') {
     for (Torre t : torres) {
-      if (dist(mouseX, mouseY, t.x, t.y) < 20) { // Posição Y do mouse ajustada
+      if (dist(mouseX, mouseY, t.x, t.y) < 20) {
         float custoUpgrade = t.custo + 20;
-        // Calcula o custo do próximo upgrade
         if (dinheiro >= custoUpgrade) {
           dinheiro -= custoUpgrade;
           t.upgrade();
@@ -440,6 +378,3 @@ void keyPressed() {
     }
   }
 }
-
-// =========================================
-// =========================================
