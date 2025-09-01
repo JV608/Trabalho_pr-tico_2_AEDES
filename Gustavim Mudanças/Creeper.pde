@@ -14,7 +14,7 @@ class Creeper extends Inimigo {
 
   public Creeper(ArrayList<Integer> caminhoIndices, Grafo grafo, PImage[] imgs) {
     super();
-    this.hp = 20;
+    this.hp = 15;
     this.maxHp = 4;
     this.recompensa = 35;
     this.x = grafo.posicoes[caminhoIndices.get(0)].x;
@@ -108,4 +108,5 @@ class Creeper extends Inimigo {
     idxDestino = 1;
   }
 }
+
 
