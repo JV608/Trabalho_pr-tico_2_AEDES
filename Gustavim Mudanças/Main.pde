@@ -9,6 +9,7 @@ int destinoCasa;
 // Dinheiro
 int dinheiro;
 float custoParede = 20;
+float custoareia = 20;
 
 // Horda
 int hordaAtual = 0;
@@ -22,7 +23,7 @@ int tempoEntreSpawns = 300;
 int tempoUltimoSpawn = 0;
 
 // Variáveis de Imagem
-PImage grama1, grama2, pedra, golen, torre1, torre2, balaImg, casa, areia;
+PImage grama1, grama2, pedra, golen, torre1, torre2, balaImg, casa, areia, areiaalma;
 PImage zumbi1, zumbi2, zumbi3;
 PImage[] zumbiImgs;
 PImage creeper1, creeper2, creeper3, creeper4, creeper5, creeper6;
@@ -32,16 +33,21 @@ Grafo grafo;
 ArrayList<Inimigo> inimigos = new ArrayList<Inimigo>();
 ArrayList<Torre> torres = new ArrayList<Torre>();
 ArrayList<Parede> paredes = new ArrayList<Parede>();
+ArrayList<Areia> areias = new ArrayList<Areia>();
 float custoTorreInicial = 50;
 
 // Variáveis para a faixa de interface
 float faixaAltura = 70;
 float jogoYInicial;
+float larguraCelula = width / (float)f;
+float alturaCelula = (height - faixaAltura) / (float)n;
 
 // =========================================
 // =========================================
 
 void setup() {
+  areiaalma = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/areia_da_alma.png");
+  
   golen = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/Iron_Golen.png");
   grama1 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama1.png");
   grama2 = loadImage("https://raw.githubusercontent.com/JV608/Trabalho_pr-tico_2_AEDES/main/data/grama2.png");
@@ -123,6 +129,10 @@ void draw() {
         inimigo.atualizarCaminho(novoCaminho, grafo);
       }
     }
+  }
+  for (int i = areias.size() - 1; i >= 0; i--) {
+    Areia a = areias.get(i);
+    a.show();
   }
 
   // loop do inimigo
@@ -330,16 +340,18 @@ void spawnCreeper() {
     inimigos.add(novoCreeper);
   }
 }
-
 void mousePressed() {
   boolean obstaculoConstruido = false;
   
+  // Calcula as coordenadas do grid a partir da posição do mouse
   int linha = (int) ((mouseY - faixaAltura) / ((height - faixaAltura) / (float)n));
   int coluna = (int) (mouseX / (width / (float)f));
 
+  // Verifica se o clique está dentro do grid do jogo
   if (linha >= 0 && linha < n && coluna >= 0 && coluna < f) {
     int idx = index(linha, coluna);
 
+    // Botão esquerdo do mouse para construir a torre
     if (mouseButton == LEFT) {
       if (dinheiro >= custoTorreInicial) {
         if (grid[linha][coluna] == 0 && !grafo.ocupado[idx]) {
@@ -351,6 +363,7 @@ void mousePressed() {
             grafo.matrizAdj[j][idx] = 0;
           }
           obstaculoConstruido = true;
+          println("Torre construída! Dinheiro restante: " + dinheiro);
         } else {
           println("Não é possível construir uma torre aqui!");
         }
@@ -359,13 +372,14 @@ void mousePressed() {
       }
     }
 
+    // Botão direito do mouse para construir a parede
     if (mouseButton == RIGHT) {
       if (dinheiro >= custoParede) {
         if (grid[linha][coluna] == 1 && !grafo.ocupado[idx] && idx != destinoCasa) {
           dinheiro -= custoParede;
           
           paredes.add(new Parede(grafo.posicoes[idx].x, grafo.posicoes[idx].y, custoParede, golen));
-
+  
           grafo.ocupado[idx] = true;
           
           int custoDaParedeNoGrafo = 40;
@@ -384,8 +398,36 @@ void mousePressed() {
         println("Dinheiro insuficiente para construir a parede!");
       }
     }
-  }
+
+    // Botão central do mouse para construir a areia
+    if (mouseButton == CENTER) {
+      if (dinheiro >= custoareia) {
+        if (grid[linha][coluna] == 1 && !grafo.ocupado[idx] && idx != destinoCasa) {
+          dinheiro -= custoareia;
+          
+          areias.add(new Areia(grafo.posicoes[idx].x, grafo.posicoes[idx].y, custoareia, areia));
   
+          grafo.ocupado[idx] = true;
+          
+          int custoDaAreiaNoGrafo = 3;
+          for (int j = 0; j < grafo.numVertices; j++) {
+            if (grafo.matrizAdj[idx][j] > 0) {
+              grafo.matrizAdj[idx][j] = custoDaAreiaNoGrafo;
+              grafo.matrizAdj[j][idx] = custoDaAreiaNoGrafo;
+            }
+          }
+          obstaculoConstruido = true;
+          println("Areia construída! Dinheiro restante: " + dinheiro);
+        } else {
+          println("Não é possível construir uma Areia aqui!");
+        }
+      } else {
+        println("Dinheiro insuficiente para construir a Areia!");
+      }
+    }
+  }
+
+  // Se qualquer obstáculo foi construído, recalcula o caminho
   if (obstaculoConstruido) {
     for (Inimigo inimigo : inimigos) {
       int origem = inimigo.getPosicaoAtualIndex(grafo);
@@ -396,6 +438,7 @@ void mousePressed() {
 }
 
 void keyPressed() {
+  // 'u' para fazer o upgrade da torre
   if (key == 'u' || key == 'U') {
     for (Torre t : torres) {
       if (dist(mouseX, mouseY, t.x, t.y) < 20) {
