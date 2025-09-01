@@ -10,29 +10,21 @@ class Grafo {
   int f = 22;
   int numVertices = n * f;
   boolean[] ocupado;
-  int[][] paredesConstruidas;
   
-  int[][] grid; 
+  int[][] grid;
   
-  // Variável para a faixa de interface, assumimos que ela é global
-  // Ou você pode passar como parâmetro no construtor
   float faixaAltura;
 
- 
-   Grafo(int[][] adj, int[][] grid, float faixaAltura) {
+  Grafo(int[][] adj, int[][] grid, float faixaAltura) {
     this.numVertices = adj.length;
     this.faixaAltura = faixaAltura;
     this.matrizAdj = adj;
-    this.grid = grid; // <<< ATRIBUI A MATRIZ 'grid' AQUI
+    this.grid = grid;
     this.ocupado = new boolean[numVertices];
     this.posicoes = new PVector[numVertices];
-    this.paredesConstruidas = new int[n][f];
 
     inicializarPosicoes();
   }
-
-
-  
 
   void adicionarAresta(int i, int j) {
     matrizAdj[i][j] = 1;
@@ -51,25 +43,21 @@ class Grafo {
       }
     }
   }
-
-
   
-   void desenharCenario(int destinoIdx) {
+  void desenharCenario(int destinoIdx) {
     float l = width / (float) f;
     float alturaAreaJogo = height - faixaAltura;
     float h = alturaAreaJogo / (float) n;
 
-    // Desenha as células (grama e pedras) a partir da matriz 'grid'
+    // Desenha as celulas (grama e pedras) a partir da matriz 'grid'
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < f; j++) {
         PVector pos = posicoes[index(i, j)];
-        if (paredesConstruidas[i][j] == 1) { // SE HÁ PAREDE CONSTRUÍDA
-        image(golen, pos.x - l / 2, pos.y - h / 2, l, h);
-      } else if (grid[i][j] == 1) { // SE É GRAMA (DO MAPA ORIGINAL)
-        image(grama1, pos.x - l / 2, pos.y - h / 2, l, h);
-      } else if (grid[i][j] == 0) { // SE É PEDRA (DO MAPA ORIGINAL)
-        image(pedra, pos.x - l / 2, pos.y - h / 2, l, h);
-      }
+        if (grid[i][j] == 1) {
+          image(grama1, pos.x - l / 2, pos.y - h / 2, l, h);
+        } else if (grid[i][j] == 0) {
+          image(pedra, pos.x - l / 2, pos.y - h / 2, l, h);
+        }
       }
     }
     
@@ -77,10 +65,8 @@ class Grafo {
     image(casa, posicoes[destinoIdx].x - 70, posicoes[destinoIdx].y - 50, 150, 150);
   }
   
-  
-
   // =========================================
-  // ===           dijkstra                ===
+  // ===             dijkstra              ===
   // =========================================
 
   ArrayList<Integer> dijkstra(int origem, int destino) {
