@@ -1,5 +1,5 @@
 class Creeper extends Inimigo {
-
+  float velocidadebase;
   float velocidade;
   float d;
   int cor;
@@ -14,12 +14,13 @@ class Creeper extends Inimigo {
 
   public Creeper(ArrayList<Integer> caminhoIndices, Grafo grafo, PImage[] imgs) {
     super();
-    this.hp = 15;
+    this.hp = 4;
     this.maxHp = 4;
     this.recompensa = 35;
     this.x = grafo.posicoes[caminhoIndices.get(0)].x;
     this.y = grafo.posicoes[caminhoIndices.get(0)].y;
     this.velocidade = 4;
+    this.velocidadebase = 4;
     this.d = 50;
     this.cor = color((int) random(255), (int) random(255), (int) random(255));
     this.animacao = imgs;
@@ -37,28 +38,49 @@ class Creeper extends Inimigo {
   }
 
   @Override
-  public void move() {
-    if (idxDestino >= caminho.size()) return;
+public void move() {
+  if (idxDestino >= caminho.size()) return;
 
-    PVector destino = caminho.get(idxDestino);
+  // ---- Lógica de verificação da areia ----
+  // 1. Obtém a célula atual do inimigo
+  int linhaAtual = floor((y - faixaAltura) / (height - faixaAltura) * n);
+  int colunaAtual = floor(x / width * f);
 
-    float dx = destino.x - x;
-    float dy = destino.y - y;
-    float distancia = dist(x, y, destino.x, destino.y);
-
-    if (distancia < velocidade) {
-      x = destino.x;
-      y = destino.y;
-      idxDestino++;
-      return;
+  boolean emAreia = false;
+  for (Areia a : areias) {
+    if (a.getLinha() == linhaAtual && a.getColuna() == colunaAtual) {
+      emAreia = true;
+      break;
     }
-
-    float dirX = dx / distancia;
-    float dirY = dy / distancia;
-    
-    x += dirX * velocidade;
-    y += dirY * velocidade;
   }
+
+  // 2. Ajusta a velocidade com base na verificação
+  if (emAreia) {
+    velocidade = velocidadebase / 2.0; // Reduz a velocidade pela metade
+  } else {
+    velocidade = velocidadebase; // Volta para a velocidade normal
+  }
+  // ---- Fim da lógica de verificação da areia ----
+
+  PVector destino = caminho.get(idxDestino);
+
+  float dx = destino.x - x;
+  float dy = destino.y - y;
+  float distancia = dist(x, y, destino.x, destino.y);
+
+  if (distancia < velocidade) {
+    x = destino.x;
+    y = destino.y;
+    idxDestino++;
+    return;
+  }
+
+  float dirX = dx / distancia;
+  float dirY = dy / distancia;
+
+  x += dirX * velocidade;
+  y += dirY * velocidade;
+}
 
   int getPosicaoAtualIndex(Grafo grafo) {
     int linha = constrain(floor( (y - faixaAltura) / ((height - faixaAltura) / (float)n) ), 0, n-1);
@@ -108,5 +130,3 @@ class Creeper extends Inimigo {
     idxDestino = 1;
   }
 }
-
-
